@@ -1,6 +1,7 @@
-module Parser (Parser, (<$>), (<|>), charP, stringP, runParser) where
+module BetaCode.Parser (Parser, (<$>), setP, buildParser, runParser) where
 
 import Control.Applicative
+import Control.Monad
 import Data.Word
 
 newtype Parser a = Parser { runParser :: [Word8] -> Maybe ([Word8], a) }
@@ -38,3 +39,11 @@ charP char = Parser f
 
 stringP :: [Word8] -> Parser [Word8]
 stringP text = sequenceA $ fmap charP text
+
+setP :: [Parser [Word8]] -> Parser [Word8]
+setP parsers = join <$> (many $ foldl (<|>) (head parsers) (tail parsers))
+
+buildParser :: [Word8] -> [Word8] -> Parser [Word8]
+buildParser pattern token = convert <$> parser
+  where parser    = stringP pattern
+        convert _ = token
