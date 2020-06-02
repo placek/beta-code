@@ -11,11 +11,13 @@ import           Data.List          (sortBy)
 import           Data.Tuple         (swap)
 
 toRules :: [([Word8], [Word8])]
-toRules = reverse $ fmap swap fromRules
+toRules = fmap swap rules
+-- toRules = reverse $ fmap swap fromRules
 
 fromRules :: [([Word8], [Word8])]
-fromRules = sortBy criteria rules
-  where criteria (a, _) (b, _) = compare b a
+fromRules = reverse rules
+-- fromRules = sortBy criteria rules
+--   where criteria (a, _) (b, _) = compare b a
 
 rules :: [([Word8], [Word8])]
 rules = fmap (bimap encode encode) values
@@ -24,7 +26,7 @@ rules = fmap (bimap encode encode) values
                  , ("'",      "᾽")
                  , ("(",      "ʽ")
                  , (")",      "ʼ")
-                 , ("),",     ",")
+                 , (",",      ",")
                  , ("*(/a",   "Ἅ")
                  , ("*(/e",   "Ἕ")
                  , ("*(/h",   "Ἥ")

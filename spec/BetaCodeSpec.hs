@@ -1,7 +1,8 @@
 module BetaCodeSpec (spec) where
 
-import Test.Hspec
-import BetaCode
+import           Test.Hspec
+import           BetaCode
+import           Control.Monad
 import qualified Data.Text          as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.ByteString    as BS
@@ -25,23 +26,23 @@ unicodeExample16 = "ὅτι ἐκ τοῦ πληρώματος αὐτοῦ ἡ�
 unicodeExample17 = "ὅτι ὁ νόμος διὰ Μωϋσέως ἐδόθη, ἡ χάρις καὶ ἡ ἀλήθεια διὰ Ἰησοῦ Χριστοῦ ἐγένετο."
 unicodeExample18 = "θεὸν οὐδεὶς ἑώρακεν πώποτε· μονογενὴς θεὸς ὁ ὢν εἰς τὸν κόλπον τοῦ πατρὸς ἐκεῖνος ἐξηγήσατο."
 
-betaCodeExample01 = "*)en a)rxh=| h)=n o( lo/goj), kai\\ o( lo/goj h)=n pro\\j to\\n qeo/n), kai\\ qeo\\j h)=n o( lo/goj."
+betaCodeExample01 = "*)en a)rxh=| h)=n o( lo/goj, kai\\ o( lo/goj h)=n pro\\j to\\n qeo/n, kai\\ qeo\\j h)=n o( lo/goj."
 betaCodeExample02 = "ou(=toj h)=n e)n a)rxh=| pro\\j to\\n qeo/n."
-betaCodeExample03 = "pa/nta di' au)tou= e)ge/neto), kai\\ xwri\\j au)tou= e)ge/neto ou)de\\ e(/n. o(\\ ge/gonen"
-betaCodeExample04 = "e)n au)tw=| zwh\\ h)=n), kai\\ h( zwh\\ h)=n to\\ fw=j tw=n a)nqrw/|pwn:"
-betaCodeExample05 = "kai\\ to\\ fw=j e)n th=| skoti/a| fai/nei), kai\\ h( skoti/a au)to\\ ou) kate/laben."
-betaCodeExample06 = "*)ege/neto a)/nqrwpoj), a)pestalme/noj para\\ qeou=), o)/noma au)tw=| *)iwa/nnhj:"
-betaCodeExample07 = "ou(=toj h)=lqen ei)j marturi/an i(/na marturh/sh| peri\\ tou= fwto/j), i(/na pa/ntej pisteu/swsin di' au)tou=."
-betaCodeExample08 = "ou)k h)=n e)kei=noj to\\ fw=j), a)ll' i(/na marturh/sh| peri\\ tou= fwto/j."
-betaCodeExample09 = "*)=hn to\\ fw=j to\\ a)lhqino/n), o(\\ fwti/zei pa/nta a)/nqrwpon), e)rxo/menon ei)j to\\n ko/smon."
-betaCodeExample10 = "e)n tw=| ko/smw| h)=n), kai\\ o( ko/smoj di' au)tou= e)ge/neto), kai\\ o( ko/smoj au)to\\n ou)k e)/gnw."
-betaCodeExample11 = "ei)j ta\\ i)/dia h)=lqen), kai\\ oi( i)/dioi au)to\\n ou) pare/labon."
-betaCodeExample12 = "o(/soi de\\ e)/labon au)to/n), e)/dwken au)toi=j e)cousi/an te/kna qeou= gene/sqai), toi=j pisteu/ousin ei)j to\\ o)/noma au)tou=),"
+betaCodeExample03 = "pa/nta di' au)tou= e)ge/neto, kai\\ xwri\\j au)tou= e)ge/neto ou)de\\ e(/n. o(\\ ge/gonen"
+betaCodeExample04 = "e)n au)tw=| zwh\\ h)=n, kai\\ h( zwh\\ h)=n to\\ fw=j tw=n a)nqrw/|pwn:"
+betaCodeExample05 = "kai\\ to\\ fw=j e)n th=| skoti/a| fai/nei, kai\\ h( skoti/a au)to\\ ou) kate/laben."
+betaCodeExample06 = "*)ege/neto a)/nqrwpoj, a)pestalme/noj para\\ qeou=, o)/noma au)tw=| *)iwa/nnhj:"
+betaCodeExample07 = "ou(=toj h)=lqen ei)j marturi/an i(/na marturh/sh| peri\\ tou= fwto/j, i(/na pa/ntej pisteu/swsin di' au)tou=."
+betaCodeExample08 = "ou)k h)=n e)kei=noj to\\ fw=j, a)ll' i(/na marturh/sh| peri\\ tou= fwto/j."
+betaCodeExample09 = "*)=hn to\\ fw=j to\\ a)lhqino/n, o(\\ fwti/zei pa/nta a)/nqrwpon, e)rxo/menon ei)j to\\n ko/smon."
+betaCodeExample10 = "e)n tw=| ko/smw| h)=n, kai\\ o( ko/smoj di' au)tou= e)ge/neto, kai\\ o( ko/smoj au)to\\n ou)k e)/gnw."
+betaCodeExample11 = "ei)j ta\\ i)/dia h)=lqen, kai\\ oi( i)/dioi au)to\\n ou) pare/labon."
+betaCodeExample12 = "o(/soi de\\ e)/labon au)to/n, e)/dwken au)toi=j e)cousi/an te/kna qeou= gene/sqai, toi=j pisteu/ousin ei)j to\\ o)/noma au)tou=,"
 betaCodeExample13 = "oi(\\ ou)k e)c ai(ma/twn ou)de\\ e)k qelh/matoj sarko\\j ou)de\\ e)k qelh/matoj a)ndro\\j a)ll' e)k qeou= e)gennh/qhsan."
-betaCodeExample14 = "*kai\\ o( lo/goj sa\\rc e)ge/neto kai\\ e)skh/nwsen e)n h(mi=n), kai\\ e)qeasa/meqa th\\n do/can au)tou=), do/can w(j monogenou=j para\\ patro/j), plh/rhj xa/ritoj kai\\ a)lhqei/aj."
-betaCodeExample15 = "*)iwa/nnhj marturei= peri\\ au)tou= kai\\ ke/kragen le/gwn), *ou(=toj h)=n o(\\n ei)=pon), *(o o)pi/sw mou e)rxo/menoj e)/mprosqe/n mou ge/gonen), o(/ti prw=to/j mou h)=n."
+betaCodeExample14 = "*kai\\ o( lo/goj sa\\rc e)ge/neto kai\\ e)skh/nwsen e)n h(mi=n, kai\\ e)qeasa/meqa th\\n do/can au)tou=, do/can w(j monogenou=j para\\ patro/j, plh/rhj xa/ritoj kai\\ a)lhqei/aj."
+betaCodeExample15 = "*)iwa/nnhj marturei= peri\\ au)tou= kai\\ ke/kragen le/gwn, *ou(=toj h)=n o(\\n ei)=pon, *(o o)pi/sw mou e)rxo/menoj e)/mprosqe/n mou ge/gonen, o(/ti prw=to/j mou h)=n."
 betaCodeExample16 = "o(/ti e)k tou= plhrw/matoj au)tou= h(mei=j pa/ntej e)la/bomen kai\\ xa/rin a)nti\\ xa/ritoj:"
-betaCodeExample17 = "o(/ti o( no/moj dia\\ *mwu+se/wj e)do/qh), h( xa/rij kai\\ h( a)lh/qeia dia\\ *)ihsou= *xristou= e)ge/neto."
+betaCodeExample17 = "o(/ti o( no/moj dia\\ *mwu+se/wj e)do/qh, h( xa/rij kai\\ h( a)lh/qeia dia\\ *)ihsou= *xristou= e)ge/neto."
 betaCodeExample18 = "qeo\\n ou)dei\\j e(w/raken pw/pote: monogenh\\j qeo\\j o( w)\\n ei)j to\\n ko/lpon tou= patro\\j e)kei=noj e)chgh/sato."
 
 encode :: String -> BS.ByteString
@@ -50,7 +51,7 @@ encode = TE.encodeUtf8 . T.pack
 spec :: Spec
 spec = do
   describe "toBetaCode" $ do
-    it "converts" $ do
+    it "converts to Beta Code" $ do
       (toBetaCode . encode $ unicodeExample01) `shouldBe` Just (encode betaCodeExample01)
       (toBetaCode . encode $ unicodeExample02) `shouldBe` Just (encode betaCodeExample02)
       (toBetaCode . encode $ unicodeExample03) `shouldBe` Just (encode betaCodeExample03)
@@ -70,23 +71,63 @@ spec = do
       (toBetaCode . encode $ unicodeExample17) `shouldBe` Just (encode betaCodeExample17)
       (toBetaCode . encode $ unicodeExample18) `shouldBe` Just (encode betaCodeExample18)
 
---  describe "fromBetaCode" $ do
---    it "converts" $ do
---      (fromBetaCode . encode $ betaCodeExample01) `shouldBe` Just (encode unicodeExample01)
---      (fromBetaCode . encode $ betaCodeExample02) `shouldBe` Just (encode unicodeExample02)
---      (fromBetaCode . encode $ betaCodeExample03) `shouldBe` Just (encode unicodeExample03)
---      (fromBetaCode . encode $ betaCodeExample04) `shouldBe` Just (encode unicodeExample04)
---      (fromBetaCode . encode $ betaCodeExample05) `shouldBe` Just (encode unicodeExample05)
---      (fromBetaCode . encode $ betaCodeExample06) `shouldBe` Just (encode unicodeExample06)
---      (fromBetaCode . encode $ betaCodeExample07) `shouldBe` Just (encode unicodeExample07)
---      (fromBetaCode . encode $ betaCodeExample08) `shouldBe` Just (encode unicodeExample08)
---      (fromBetaCode . encode $ betaCodeExample09) `shouldBe` Just (encode unicodeExample09)
---      (fromBetaCode . encode $ betaCodeExample10) `shouldBe` Just (encode unicodeExample10)
---      (fromBetaCode . encode $ betaCodeExample11) `shouldBe` Just (encode unicodeExample11)
---      (fromBetaCode . encode $ betaCodeExample12) `shouldBe` Just (encode unicodeExample12)
---      (fromBetaCode . encode $ betaCodeExample13) `shouldBe` Just (encode unicodeExample13)
---      (fromBetaCode . encode $ betaCodeExample14) `shouldBe` Just (encode unicodeExample14)
---      (fromBetaCode . encode $ betaCodeExample15) `shouldBe` Just (encode unicodeExample15)
---      (fromBetaCode . encode $ betaCodeExample16) `shouldBe` Just (encode unicodeExample16)
---      (fromBetaCode . encode $ betaCodeExample17) `shouldBe` Just (encode unicodeExample17)
---      (fromBetaCode . encode $ betaCodeExample18) `shouldBe` Just (encode unicodeExample18)
+    it "is inverse of fromBetaCode" $ do
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample01) `shouldBe` Just (encode unicodeExample01)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample02) `shouldBe` Just (encode unicodeExample02)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample03) `shouldBe` Just (encode unicodeExample03)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample04) `shouldBe` Just (encode unicodeExample04)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample05) `shouldBe` Just (encode unicodeExample05)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample06) `shouldBe` Just (encode unicodeExample06)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample07) `shouldBe` Just (encode unicodeExample07)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample08) `shouldBe` Just (encode unicodeExample08)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample09) `shouldBe` Just (encode unicodeExample09)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample10) `shouldBe` Just (encode unicodeExample10)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample11) `shouldBe` Just (encode unicodeExample11)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample12) `shouldBe` Just (encode unicodeExample12)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample13) `shouldBe` Just (encode unicodeExample13)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample14) `shouldBe` Just (encode unicodeExample14)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample15) `shouldBe` Just (encode unicodeExample15)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample16) `shouldBe` Just (encode unicodeExample16)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample17) `shouldBe` Just (encode unicodeExample17)
+      (fromBetaCode <=< toBetaCode $ encode unicodeExample18) `shouldBe` Just (encode unicodeExample18)
+
+  describe "fromBetaCode" $ do
+    it "converts from Beta Code" $ do
+      (fromBetaCode . encode $ betaCodeExample01) `shouldBe` Just (encode unicodeExample01)
+      (fromBetaCode . encode $ betaCodeExample02) `shouldBe` Just (encode unicodeExample02)
+      (fromBetaCode . encode $ betaCodeExample03) `shouldBe` Just (encode unicodeExample03)
+      (fromBetaCode . encode $ betaCodeExample04) `shouldBe` Just (encode unicodeExample04)
+      (fromBetaCode . encode $ betaCodeExample05) `shouldBe` Just (encode unicodeExample05)
+      (fromBetaCode . encode $ betaCodeExample06) `shouldBe` Just (encode unicodeExample06)
+      (fromBetaCode . encode $ betaCodeExample07) `shouldBe` Just (encode unicodeExample07)
+      (fromBetaCode . encode $ betaCodeExample08) `shouldBe` Just (encode unicodeExample08)
+      (fromBetaCode . encode $ betaCodeExample09) `shouldBe` Just (encode unicodeExample09)
+      (fromBetaCode . encode $ betaCodeExample10) `shouldBe` Just (encode unicodeExample10)
+      (fromBetaCode . encode $ betaCodeExample11) `shouldBe` Just (encode unicodeExample11)
+      (fromBetaCode . encode $ betaCodeExample12) `shouldBe` Just (encode unicodeExample12)
+      (fromBetaCode . encode $ betaCodeExample13) `shouldBe` Just (encode unicodeExample13)
+      (fromBetaCode . encode $ betaCodeExample14) `shouldBe` Just (encode unicodeExample14)
+      (fromBetaCode . encode $ betaCodeExample15) `shouldBe` Just (encode unicodeExample15)
+      (fromBetaCode . encode $ betaCodeExample16) `shouldBe` Just (encode unicodeExample16)
+      (fromBetaCode . encode $ betaCodeExample17) `shouldBe` Just (encode unicodeExample17)
+      (fromBetaCode . encode $ betaCodeExample18) `shouldBe` Just (encode unicodeExample18)
+
+    it "is inverse of toBetaCode" $ do
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample01) `shouldBe` Just (encode betaCodeExample01)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample02) `shouldBe` Just (encode betaCodeExample02)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample03) `shouldBe` Just (encode betaCodeExample03)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample04) `shouldBe` Just (encode betaCodeExample04)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample05) `shouldBe` Just (encode betaCodeExample05)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample06) `shouldBe` Just (encode betaCodeExample06)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample07) `shouldBe` Just (encode betaCodeExample07)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample08) `shouldBe` Just (encode betaCodeExample08)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample09) `shouldBe` Just (encode betaCodeExample09)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample10) `shouldBe` Just (encode betaCodeExample10)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample11) `shouldBe` Just (encode betaCodeExample11)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample12) `shouldBe` Just (encode betaCodeExample12)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample13) `shouldBe` Just (encode betaCodeExample13)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample14) `shouldBe` Just (encode betaCodeExample14)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample15) `shouldBe` Just (encode betaCodeExample15)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample16) `shouldBe` Just (encode betaCodeExample16)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample17) `shouldBe` Just (encode betaCodeExample17)
+      (fromBetaCode >=> toBetaCode $ encode betaCodeExample18) `shouldBe` Just (encode betaCodeExample18)
