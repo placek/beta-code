@@ -7,9 +7,11 @@ import           Data.Word
 import           BetaCode.Parser
 import           BetaCode.Rules
 
+-- | Convert beta-code like string into proper unicode greek.
 fromBetaCode :: BS.ByteString -> Maybe BS.ByteString
 fromBetaCode input = snd <$> runParser fromParser (BS.unpack input)
 
+-- | Convert proper unicode greek into beta-code like string.
 toBetaCode :: BS.ByteString -> Maybe BS.ByteString
 toBetaCode input = snd <$> runParser toParser (BS.unpack input)
 

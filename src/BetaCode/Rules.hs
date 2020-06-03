@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | Rules of [Beta Code](https://en.wikipedia.org/wiki/Beta_Code) to unicode greek converter.
 module BetaCode.Rules (fromRules, toRules) where
 
 import qualified Data.Text          as T
@@ -10,15 +11,15 @@ import           Data.Word          (Word8)
 import           Data.List          (sortBy)
 import           Data.Tuple         (swap)
 
+-- | Rules, but in proper order to construct the precedence for converter to beta code from greek unicode.
 toRules :: [([Word8], [Word8])]
 toRules = fmap swap rules
--- toRules = reverse $ fmap swap fromRules
 
+-- | Rules, but in proper order to construct the precedence for converter from beta code to greek unicode.
 fromRules :: [([Word8], [Word8])]
 fromRules = reverse rules
--- fromRules = sortBy criteria rules
---   where criteria (a, _) (b, _) = compare b a
 
+-- | Set of pairs of convertible sets of bytes.
 rules :: [([Word8], [Word8])]
 rules = fmap (bimap encode encode) values
   where values = [ (" ",      " ")
