@@ -10,7 +10,7 @@ library
   exposed-modules:     BetaCode
                      , BetaCode.Rules
                      , BetaCode.Parser
-  build-depends:       base >=4.12 && <4.13
+  build-depends:       base >=4.12
                      , text
                      , bytestring
   hs-source-dirs:      src
@@ -20,7 +20,7 @@ test-suite spec
   type:                exitcode-stdio-1.0
   main-is:             Spec.hs
   hs-source-dirs:      spec
-  build-depends:       base >=4.12 && <4.13
+  build-depends:       base >=4.12
                      , hspec ==2.*
                      , text
                      , bytestring

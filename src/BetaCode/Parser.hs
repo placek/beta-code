@@ -2,7 +2,6 @@
 module BetaCode.Parser (Parser, (<$>), setP, buildParser, runParser) where
 
 import Control.Applicative
-import Control.Monad
 import Data.Word
 
 -- | A @Parser@ type.
@@ -47,7 +46,7 @@ stringP text = sequenceA $ fmap charP text
 
 -- | Parse a set. The matcher is one of the provided list of @parsers@. The oder of parsers in the list matters.
 setP :: [Parser [Word8]] -> Parser [Word8]
-setP parsers = join <$> (many $ foldl (<|>) (head parsers) (tail parsers))
+setP parsers = concat <$> (many $ foldl (<|>) (head parsers) (tail parsers))
 
 -- | Build parser that maches @pattern@ and when matched, presents it as @token@.
 buildParser :: [Word8] -> [Word8] -> Parser [Word8]

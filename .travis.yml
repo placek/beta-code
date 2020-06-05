@@ -13,7 +13,7 @@ cache:
   - "$TRAVIS_BUILD_DIR/.stack-work"
 matrix:
   include:
-  - ghc: 8.6.5
+  - ghc: 8.8.3
 notifications:
   email: false
 
