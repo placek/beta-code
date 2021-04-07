@@ -30,7 +30,7 @@ instance Applicative Parser where
 
 -- | An `Alternative` instance for `Parser` type.
 instance Alternative Parser where
-  empty = Parser $ \_ -> Nothing
+  empty = Parser $ const Nothing
   (Parser p1) <|> (Parser p2) =
     Parser $ \input -> p1 input <|> p2 input
 
@@ -42,11 +42,11 @@ charP char = Parser f
 
 -- | Parse a string of bytes. The matcher is a sequence @text@ of bytes given in argument.
 stringP :: [Word8] -> Parser [Word8]
-stringP text = sequenceA $ fmap charP text
+stringP = traverse charP
 
 -- | Parse a set. The matcher is one of the provided list of @parsers@. The oder of parsers in the list matters.
 setP :: [Parser [Word8]] -> Parser [Word8]
-setP parsers = concat <$> (many $ foldl (<|>) (head parsers) (tail parsers))
+setP parsers = concat <$> many (foldl1 (<|>) parsers)
 
 -- | Build parser that maches @pattern@ and when matched, presents it as @token@.
 buildParser :: [Word8] -> [Word8] -> Parser [Word8]
